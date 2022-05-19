@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
  * @property Address $destination_id
  * @property Driver $driver_id
  * @property float $amount
+ * @property integer $distance_mt
  * @property Carbon $scheduled_to
  */
 class Travel extends Model
