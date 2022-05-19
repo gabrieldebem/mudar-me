@@ -28,12 +28,12 @@ class TravelService
         return $this->travel;
     }
 
-    public function calcFinalAmount(Driver $driver): float
+    public function calcFinalAmount(Driver $driver, Address $destination, Address $origin): float
     {
         $distanceInMeters = $this->getDistance(
-            destination: $this->travel->destination,
-            origin: $this->travel->origin
-        )->value;
+            destination: $destination,
+            origin: $origin
+        )->distance->value;
 
         $distance = ceil((int) $distanceInMeters / 1000);
 

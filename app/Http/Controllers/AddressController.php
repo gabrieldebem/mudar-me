@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAddressRequest;
 use App\Http\Requests\UpdateAddressRequest;
 use App\Models\Address;
+use App\Repositories\AddressRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -27,12 +28,22 @@ class AddressController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreAddressRequest  $request
+     * @param \App\Http\Requests\StoreAddressRequest $request
+     * @param AddressRepository $addressRepository
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreAddressRequest $request): JsonResponse
+    public function store(StoreAddressRequest $request, AddressRepository $addressRepository): JsonResponse
     {
-        //
+        $address = $addressRepository->create([
+            'street' => $request->input('street'),
+            'number' => $request->input('number'),
+            'neighborhood' => $request->input('neighborhood'),
+            'city' => $request->input('city'),
+            'state' => $request->input('state'),
+            'postal_code' => $request->input('postal_code'),
+        ])->getAddress();
+
+        return response()->json($address);
     }
 
     /**
@@ -49,13 +60,29 @@ class AddressController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateAddressRequest  $request
-     * @param  \App\Models\Address  $address
+     * @param \App\Http\Requests\UpdateAddressRequest $request
+     * @param \App\Models\Address $address
+     * @param AddressRepository $addressRepository
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateAddressRequest $request, Address $address): JsonResponse
-    {
-        //
+    public function update(
+        UpdateAddressRequest $request,
+        Address $address,
+        AddressRepository $addressRepository
+    ): JsonResponse {
+        $updatedAddress = $addressRepository
+            ->setAddress($address)
+            ->update([
+                'street' => $request->input('street'),
+                'number' => $request->input('number'),
+                'neighborhood' => $request->input('neighborhood'),
+                'city' => $request->input('city'),
+                'state' => $request->input('state'),
+                'postal_code' => $request->input('postal_code'),
+            ])
+            ->getAddress();
+
+        return response()->json($updatedAddress);
     }
 
     /**

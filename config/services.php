@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google_maps' => [
+        'urls' => [
+            'distance_api' => env('GOOGLE_URL'),
+        ],
+        'token' => env('GOOGLE_TOKEN'),
+    ]
 ];

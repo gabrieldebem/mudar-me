@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Travel;
 use App\Services\TravelService;
+use Illuminate\Support\Carbon;
 
 class TravelRepository
 {
@@ -13,14 +14,14 @@ class TravelRepository
 
     private Travel $travel;
 
-    public function set(Travel $travel): TravelRepository
+    public function setTravel(Travel $travel): TravelRepository
     {
         $this->travel = $travel;
 
         return $this;
     }
 
-    public function get(): Travel
+    public function getTravel(): Travel
     {
         return $this->travel;
     }
@@ -30,12 +31,14 @@ class TravelRepository
         string $destinationId,
         string $driverId,
         float $amount,
+        Carbon $scheduledTo,
     ): TravelRepository {
         $this->travel = new Travel();
         $this->travel->origin_id = $originId;
         $this->travel->destination_id = $destinationId;
         $this->travel->driver_id = $driverId;
         $this->travel->amount = $amount;
+        $this->travel->scheduled_to = $scheduledTo;
         $this->travel->save();
 
         return $this;

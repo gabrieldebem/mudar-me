@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Driver;
-use App\Services\DriverService;
+use Illuminate\Database\Eloquent\Builder;
 
 class DriverRepository
 {
@@ -23,7 +23,7 @@ class DriverRepository
 
     public function create(array $data): self
     {
-        $this->driver =  Driver::create([$data]);
+        $this->driver = Driver::create($data);
 
         return $this;
     }
@@ -33,5 +33,13 @@ class DriverRepository
         $this->driver->update($data);
 
         return $this;
+    }
+
+    public function getDriverWithoutTravelsSchedule()
+    {
+        return Driver::whereDoesntHave(
+            'travels',
+            fn (Builder $query) => $query->where('scheduled_to', today())
+        )->firstOrFail();
     }
 }

@@ -13,7 +13,7 @@ class StoreDriverRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,10 @@ class StoreDriverRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required',
+            'document' => 'required',
+            'truck' => 'required',
+            'amount_km' => 'required|numeric',
         ];
     }
 }

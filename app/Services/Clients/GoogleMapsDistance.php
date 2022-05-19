@@ -30,7 +30,7 @@ class GoogleMapsDistance
             ])
             ->throw()
             ->object()
-            ->rows->first()
-            ->elements->first();
+            ->rows[0]
+            ->elements[0];
     }
 }

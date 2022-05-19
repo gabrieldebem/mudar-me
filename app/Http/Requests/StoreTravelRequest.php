@@ -26,6 +26,7 @@ class StoreTravelRequest extends FormRequest
         return [
             'origin_id' => 'required',
             'destination_id' => 'required',
+            'scheduled_to' => 'required|date:Y-m-d'
         ];
     }
 }

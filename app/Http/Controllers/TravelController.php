@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTravelRequest;
 use App\Http\Requests\UpdateTravelRequest;
+use App\Models\Address;
 use App\Models\Travel;
+use App\Repositories\DriverRepository;
 use App\Repositories\TravelRepository;
 use App\Services\TravelService;
 use Illuminate\Http\JsonResponse;
@@ -31,20 +33,28 @@ class TravelController extends Controller
      * @param \App\Http\Requests\StoreTravelRequest $request
      * @param TravelRepository $travelRepository
      * @param TravelService $travelService
+     * @param DriverRepository $driverRepository
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(
         StoreTravelRequest $request,
         TravelRepository $travelRepository,
-        TravelService $travelService
+        TravelService $travelService,
+        DriverRepository $driverRepository,
     ): JsonResponse {
+        $origin = Address::find($request->input('origin_id'));
+        $destination = Address::find($request->input('destination_id'));
+        $driver = $driverRepository->getDriverWithoutTravelsSchedule();
 
         $travel = $travelRepository->create(
-            originId: $request->input('origin_id'),
-            destinationId: $request->input('destination_id'),
-            driverId: $driver,
-            amount: $travelService->calcFinalAmount($driver),
-        );
+            originId: $origin->id,
+            destinationId: $destination->id,
+            driverId: $driver->id,
+            amount: $travelService->calcFinalAmount($driver, $destination, $origin),
+            scheduledTo: $request->date('scheduled_to')
+        )->getTravel();
+
+        return response()->json($travel);
     }
 
     /**
@@ -64,9 +74,9 @@ class TravelController extends Controller
      * @param \App\Http\Requests\UpdateTravelRequest $request
      * @param \App\Models\Travel $travel
      * @param TravelRepository $travelRepository
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateTravelRequest $request, Travel $travel, TravelRepository $travelRepository)
+    public function update(UpdateTravelRequest $request, Travel $travel, TravelRepository $travelRepository): JsonResponse
     {
         $travelRepository->update($request->all());
     }
