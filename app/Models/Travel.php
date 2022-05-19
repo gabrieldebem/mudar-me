@@ -24,6 +24,7 @@ class Travel extends Model
         'destination_id',
         'driver_id',
         'amount',
+        'distance_mt',
         'scheduled_to'
     ];
 

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Services\Clients;
+namespace App\Repositories\Clients;
 
+use App\Models\Google\DistanceAndDuration;
 use Illuminate\Support\Facades\Http;
 
 class GoogleMapsDistance
@@ -20,9 +21,9 @@ class GoogleMapsDistance
         return Http::baseUrl($this->distanceApiUrl);
     }
 
-    public function getDistance(string $destination, string $origin): object
+    public function getDistance(string $destination, string $origin): DistanceAndDuration
     {
-        return $this->api()
+        $response = $this->api()
             ->get('/json', [
                 'destinations' => $destination,
                 'origins' => $origin,
@@ -32,5 +33,7 @@ class GoogleMapsDistance
             ->object()
             ->rows[0]
             ->elements[0];
+
+        return new DistanceAndDuration($response);
     }
 }

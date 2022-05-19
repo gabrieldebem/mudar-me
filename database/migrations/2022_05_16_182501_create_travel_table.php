@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignIdFor(Address::class, 'destination_id');
             $table->foreignIdFor(Driver::class, 'driver_id');
             $table->float('amount');
+            $table->integer('distance_mt');
             $table->timestamp('scheduled_to');
             $table->timestamps();
         });

@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTravelRequest;
 use App\Http\Requests\UpdateTravelRequest;
-use App\Models\Address;
 use App\Models\Travel;
-use App\Repositories\DriverRepository;
-use App\Repositories\TravelRepository;
+=use App\Repositories\TravelRepository;
 use App\Services\TravelService;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -31,28 +29,19 @@ class TravelController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \App\Http\Requests\StoreTravelRequest $request
-     * @param TravelRepository $travelRepository
      * @param TravelService $travelService
-     * @param DriverRepository $driverRepository
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(
         StoreTravelRequest $request,
-        TravelRepository $travelRepository,
         TravelService $travelService,
-        DriverRepository $driverRepository,
     ): JsonResponse {
-        $origin = Address::find($request->input('origin_id'));
-        $destination = Address::find($request->input('destination_id'));
-        $driver = $driverRepository->getDriverWithoutTravelsSchedule();
-
-        $travel = $travelRepository->create(
-            originId: $origin->id,
-            destinationId: $destination->id,
-            driverId: $driver->id,
-            amount: $travelService->calcFinalAmount($driver, $destination, $origin),
-            scheduledTo: $request->date('scheduled_to')
-        )->getTravel();
+        $travel = $travelService
+            ->create(
+                originId: $request->input('origin_id'),
+                destinationId: $request->input('destination_id'),
+                scheduledTo: $request->date('scheduled_to')
+            );
 
         return response()->json($travel);
     }
