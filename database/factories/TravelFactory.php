@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Address;
+use App\Models\Driver;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,12 @@ class TravelFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'origin_id' => Address::factory(),
+            'destination_id' => Address::factory(),
+            'driver_id' => Driver::factory(),
+            'amount' => $this->faker->randomFloat(2, 100, 999),
+            'distance_mt' => $this->faker->numberBetween(100, 9999),
+            'scheduled_to' => today()->addWeek(),
         ];
     }
 }

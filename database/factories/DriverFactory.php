@@ -17,7 +17,10 @@ class DriverFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->name(),
+            'document' => $this->faker->text(11),
+            'truck' => $this->faker->name(),
+            'amount_km' => $this->faker->randomFloat(2, 10, 20),
         ];
     }
 }

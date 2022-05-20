@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTravelRequest;
 use App\Http\Requests\UpdateTravelRequest;
 use App\Models\Travel;
-=use App\Repositories\TravelRepository;
+use App\Repositories\TravelRepository;
 use App\Services\TravelService;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -67,7 +67,12 @@ class TravelController extends Controller
      */
     public function update(UpdateTravelRequest $request, Travel $travel, TravelRepository $travelRepository): JsonResponse
     {
-        $travelRepository->update($request->all());
+        $updatedTravel = $travelRepository
+            ->setTravel($travel)
+            ->update($request->all())
+            ->getTravel();
+
+        return response()->json($updatedTravel);
     }
 
     /**
